@@ -50,10 +50,11 @@ public class Contacte {
      */
     @Override
     public String toString(){
-        return "--CONTACTE --\n"
-                +name+" "+lastName+"\n"
-                +"Tel: "+phone+"\n"
-                +"Correu: "+email
+        return "------CONTACTE ------\n" +   
+              name + " " + lastName + "\n" + 
+              "Tel: " + phone + "\n" + 
+              "Correu: \n"+email + "\n" + 
+               "---------------------"
                ;
     }
     
@@ -100,9 +101,35 @@ public class Contacte {
                 
         c = new Contacte(name,lastName,email,phone);
         
-        Directori.escriuAlDirectori(c);
+        guardaAlFitxer(c);
     }    
-       
+
+
+    /**
+     * Escriu al directori un nou contacte. Primer llegeix el fitxer, suma un 
+     * contacte al final si hi cap, i aumenta l'índex.
+     * @param c
+     * @throws Exception
+     */
+    public static void guardaAlFitxer(Contacte c) throws Exception{
+        try{
+            boolean afegeix = true;
+            FitxerSortida agenda = new FitxerSortida("fitxers/agenda.txt", afegeix);
+            agenda.afegeixLiniaNova();
+            agenda.escriuCamp(c.name());
+            agenda.afegeixSeparador();
+            agenda.escriuCamp(c.lastName());
+            agenda.afegeixSeparador();
+            agenda.escriuCamp(c.email());
+            agenda.afegeixSeparador();
+            agenda.escriuCamp(c.phone());
+            agenda.tanca();
+            System.out.println("Contacte afegit correctament.");
+        } catch (FileNotFoundException e){
+            System.out.println("Fitxer no trobat.");
+        }
+    }
+
     /**
      * Cerca un contacte amb un camp coincident. El primer contacte que 
      * coincideixi es mostra. (Ignora si hi ha més d'un contacte amb el mateix
@@ -116,7 +143,7 @@ public class Contacte {
         Contacte c = new Contacte();
         Boolean trobat = false;
         try{
-            FitxerCampEntrada agenda = new FitxerCampEntrada("fitxers/agenda.txt");
+            FitxerEntrada agenda = new FitxerEntrada("fitxers/agenda.txt");
             System.out.println("Cercant al directori..");
             
             Camp name, lastName, email, phone;
@@ -183,14 +210,25 @@ public class Contacte {
      * @param 
      */
     public static void mostraContactes() throws Exception {
-        Directori d = Directori.llegeixDirectori();
+        Camp name, lastName, email, phone;
+        Contacte contacte;
 
         System.out.println("Directori de contactes:");
-        for(Contacte c: d.accedirDirectori()){
-            if(c != null){
-            System.out.println(c);
+        try{
+            FitxerEntrada agenda = new FitxerEntrada("fitxers/agenda.txt");
+            while(agenda.quedenCamps()){
+            //Inicialitzam contacte nou amb nous atributs llegits
+            name = agenda.nouCampFitxer();
+            lastName = agenda.nouCampFitxer();
+            email = agenda.nouCampFitxer();
+            phone = agenda.nouCampFitxer();
+            contacte = new Contacte(name, lastName, email, phone);
+            //Mostram contacte
+            System.out.println(contacte);            
             }
-        }  
+        } catch (Exception e){
+            System.out.println("Fitxer no trobat.");
+        }
     }
     
     /**
