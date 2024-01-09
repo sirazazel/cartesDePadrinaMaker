@@ -5,3 +5,5 @@ Sandra#Cabrera García#scabrera@estudiant.uib.cat#123456789
 Prova#Llinatge#Correu#Telefon
 Francesc#Mut Molla#xesc@estudiant.uib.es#6544
 Pau#Llinas Llabres#pau@estudiant.uib.cat#a1293
+Pere#Ruiz Marin#pere@estudiant.udg.cat#856465
+Marc#Fiol Mayrata#marc@estudiant.uib.cat#1234

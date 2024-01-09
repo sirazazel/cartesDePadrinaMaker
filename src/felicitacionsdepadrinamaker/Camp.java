@@ -80,6 +80,17 @@ public class Camp {
         }
     }
     
+    
+    public String retalla(){
+        char[] arrayRetallada = new char[longitud];
+        
+        for(int i = 0; i < length(); i++){
+            arrayRetallada[i] = contingut[i];
+        }
+        
+        return String.valueOf(arrayRetallada);
+    }
+    
     /**
      * Comprova si la paraula actual és igual a la cerca.
      * L'algorisme recorr cada un dels valors de l'array cercant la primera 

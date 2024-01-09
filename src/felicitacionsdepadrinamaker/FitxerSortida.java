@@ -30,9 +30,9 @@ public class FitxerSortida {
     private static final String EMAIL = "EMAIL";
     
     private static final Camp NAMEFIELD = new Camp(NAME.toCharArray(), 4);
-    private static final Camp LASTNAMEFIELD = new Camp(LASTNAME.toCharArray(), 4);
-    private static final Camp PHONEFIELD = new Camp(PHONE.toCharArray(), 4);
-    private static final Camp EMAILFIELD = new Camp(EMAIL.toCharArray(), 4);
+    private static final Camp LASTNAMEFIELD = new Camp(LASTNAME.toCharArray(), 8);
+    private static final Camp PHONEFIELD = new Camp(PHONE.toCharArray(), 5);
+    private static final Camp EMAILFIELD = new Camp(EMAIL.toCharArray(), 5);
 
     /**
      * Constructor
@@ -119,22 +119,14 @@ public class FitxerSortida {
      */
     
     public void substitueixVariable(Camp camp, Contacte contacte) throws Exception {
-        if (camp.compara(NAMEFIELD)){
-            for(char c: contacte.name().contingut()){
-                this.afegeix((int) c);
-            }
+        if (camp.compara(NAMEFIELD)){   
+            escriuCamp(contacte.name());
         } else if (camp.compara(LASTNAMEFIELD)) {
-            for(char c: contacte.lastName().contingut()){
-                this.afegeix((int) c);
-            }
+            escriuCamp(contacte.lastName());
         } else if (camp.compara(PHONEFIELD)) {
-            for(char c: contacte.phone().contingut()){
-                this.afegeix((int) c);
-            }
+            escriuCamp(contacte.phone());
         } else if (camp.compara(EMAILFIELD)) {
-            for(char c: contacte.email().contingut()){
-                this.afegeix((int) c);
-            }
+            escriuCamp(contacte.email());
         }
     }
 }

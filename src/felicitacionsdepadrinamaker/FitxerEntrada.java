@@ -91,6 +91,7 @@ public class FitxerEntrada {
      * insertat i canviar-ho pel camp conseqüent del contacte passat per 
      * paràmetre.
      * @param c
+     * @param ruta
      * @throws Exception
      */
     public void generaDesdePlantilla(Contacte c, String ruta) throws Exception {
@@ -98,45 +99,40 @@ public class FitxerEntrada {
         boolean modeVariable = false;
         int longitudVariable = 0;
         Camp campVariable;
-        String rutaFitxer, email;
+        String email = c.email().retalla();
+        String rutaFitxer;
         
         caracter = buffer.read();
-        email = String.valueOf(c.email().contingut());
-        
         try{
             //Obrim fitxer d'escriptura.
-            rutaFitxer = ruta + email + ".html";
-            System.out.println(rutaFitxer);
-            
-            FitxerSortida cardOut = new FitxerSortida("test.html");
+            rutaFitxer = ruta + email + ".html";            
+            FitxerSortida cardOut = new FitxerSortida(rutaFitxer);
                         
             while (quedenLletres()){
                 if (caracter == NUM && modeVariable == false){
                     contingutVariable = new char[30];
                     modeVariable = true;
                     caracter = buffer.read();
-                    System.out.println("\nMODE VARIABLE:" + modeVariable);
                 } else  if (caracter != NUM && modeVariable == true) {
                     contingutVariable[longitudVariable] = (char) caracter;
                     longitudVariable++;
                     caracter = buffer.read();
                 } else if (caracter == NUM && modeVariable == true) {
                     campVariable = new Camp(contingutVariable, longitudVariable);
-                    System.out.print(campVariable);
                     modeVariable = false;
-                    System.out.println("\n MODE VARIABLE:" + modeVariable);
                     cardOut.substitueixVariable(campVariable, c);
                     //Reiniciam
                     caracter = buffer.read();
                     contingutVariable = new char[30];
                     longitudVariable = 0;
                 } else {
-                    System.out.print((char)caracter);
                     cardOut.afegeix(caracter);
                     caracter = buffer.read();
                 }
             }
             cardOut.tanca();
+            System.out.println("Carta per a " + c.name() + " " +  c.lastName() 
+                                + " generada correctament.");
         } catch (NumberFormatException e) {
             System.out.println("Error");
         }

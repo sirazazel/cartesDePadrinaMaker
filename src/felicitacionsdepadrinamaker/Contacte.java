@@ -50,6 +50,10 @@ public class Contacte {
      */
     @Override
     public String toString(){
+
+        
+        
+        
         return "------CONTACTE ------\n" +   
               name + " " + lastName + "\n" + 
               "Tel: " + phone + "\n" + 
@@ -89,19 +93,24 @@ public class Contacte {
         Contacte c;
         
         // Menú creació contacte nou
-        System.out.println("Menú de creació de contacte nou.");
-        System.out.println("Nom:");
+        blanc();
+        System.out.println("Menu de creacio de contacte nou.");
+        System.out.print("Nom -> ");
         name = Camp.nouCampTeclat();
-        System.out.println("Llinatges:");
+        System.out.print("Llinatges -> ");
         lastName = Camp.nouCampTeclat();
-        System.out.println("Correu electrònic:");
+        System.out.print("Correu electronic -> ");
         email = Camp.nouCampTeclat();
-        System.out.println("Telèfon:");
+        System.out.print("Telefon -> ");
         phone = Camp.nouCampTeclat();
                 
         c = new Contacte(name,lastName,email,phone);
         
         guardaAlFitxer(c);
+        
+        System.out.println("Pitja enter per acabar...");
+        char stop = LT.readChar();
+
     }    
 
 
@@ -124,7 +133,7 @@ public class Contacte {
             agenda.afegeixSeparador();
             agenda.escriuCamp(c.phone());
             agenda.tanca();
-            System.out.println("Contacte afegit correctament.");
+            System.out.print("Contacte creat. ");
         } catch (FileNotFoundException e){
             System.out.println("Fitxer no trobat.");
         }
@@ -202,6 +211,9 @@ public class Contacte {
                 }
             }
         }
+        System.out.println("Pitja enter per acabar...");
+        char stop = LT.readChar();
+
     }
     
     /**
@@ -229,6 +241,8 @@ public class Contacte {
         } catch (Exception e){
             System.out.println("Fitxer no trobat.");
         }
+        System.out.println("Pitja enter per acabar...");
+        char stop = LT.readChar();
     }
     
     /**
@@ -251,10 +265,16 @@ public class Contacte {
     /**
      * Mostra el contacte triat per pantalla.
      */
-    public static void mostraLlista(){
+    public static void novaLlista(){
         
     }
     
+    /**
+     * Mostra el contacte triat per pantalla.
+     */
+    public static void eliminaLlista(){
+        
+    }
     /**
      * Mostra tots els contactes del directori.
      */
@@ -263,8 +283,23 @@ public class Contacte {
     }
     
     /**
+     * Mostra el contacte triat per pantalla.
+     */
+    public static void consultaLlista(){
+        
+    }
+    
+    /**
      * Aquest mètode no fa res. S'empra per a tornar enrere als menús.
      */
-    static void enrere(){
+    private static void enrere(){
+        
     }
+    /**
+     * Fa net la pantalla (entre comilles..) . S'empra per a fer guapos els menús.
+     */
+    private static void blanc(){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+
 }

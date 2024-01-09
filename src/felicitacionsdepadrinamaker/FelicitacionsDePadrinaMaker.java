@@ -30,15 +30,27 @@ public class FelicitacionsDePadrinaMaker {
      */
     public static void main(String[] args) throws Exception {
         int fSelect;
-        
         while(end == false){
-            System.out.println("Menú principal.");
+            blanc();
             System.out.println("""
-                               1.Generar
-                               2.Agenda
-                               3.Llistes
-                               0.Sortir
-                               """);
+                                  _______________________________________________________
+                                 /\\                                                      \\ 
+                             (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><>)==(O)
+                                \\/''''''''''''''''''''''''''''''''''''''''''''''''''''''/
+                                 (                                                      (
+                                  )              -----------------------                 )
+                                 (               |   Menu  principal   |                (
+                                  )              -----------------------                 )
+                                 (     1 -> Generar una carta nova des d'una plantilla. (
+                                  )    2 -> Consulta l'agenda de contactes.              )
+                                 (     3 -> Consulta les llistes de distribució.        (
+                                  )    0 -> Surt del programa.                           )
+                                 (                                                      (
+                                  )'''''''''''''''''''''''''''''''''''''''''''''''''''''')    
+                             (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)
+                                 \\/______________________________________________________/
+                             """);
+            
             try{
                 fSelect = LT.readInt();
                 switch(fSelect){
@@ -48,7 +60,7 @@ public class FelicitacionsDePadrinaMaker {
                     case 0 -> acaba();
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Selecció invàlida");
+                System.out.println("\n Selecció invàlida");
             }
         }
     }
@@ -56,16 +68,30 @@ public class FelicitacionsDePadrinaMaker {
     /**
      * Submenús. 
      */
-    static void administraAgenda() throws Exception {
+    private static void administraAgenda() throws Exception {
         int fSelect;
-        
-        System.out.println("Administrar agenda.");
+        blanc();
         System.out.println("""
-                           1.Contacte nou
-                           2.Consulta
-                           3.Eliminar contacte
-                           0.Tornar enrere
-                           """);
+                                 _______________________________________________________
+                                /\\                                                      \\ 
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><>)==(O)
+                               \\/''''''''''''''''''''''''''''''''''''''''''''''''''''''/
+                                (                                                      (
+                                 )              -----------------------                 )
+                                (               | Agenda de contactes |                (
+                                 )              -----------------------                 )
+                                (     1 -> Crear un contacte nou.                      (
+                                 )    2 -> Consulta l'agenda de contactes.              )
+                                (     3 -> Elimina un contacte de l'agenda.            (
+                                 )    0 -> Torna al menú principal.                    )
+                                (                                                      (
+                                 )'''''''''''''''''''''''''''''''''''''''''''''''''''''')    
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)
+                                \\/______________________________________________________/
+                            """);
+
+
+
         try{
             fSelect = LT.readInt();
             switch(fSelect){
@@ -80,22 +106,33 @@ public class FelicitacionsDePadrinaMaker {
         }
     }
     
-    static void seleccioContacte() throws Exception {
+    private static void seleccioContacte() throws Exception {
         int fSelect;
-        
-        System.out.println("Vols mostrar un contacte o la llibreta sencera?");
+        blanc();
         System.out.println("""
-                           1. Un contacte.
-                           2. Tota la llibreta.
-                           0. Tornar enrere.
-                           """);
-        
+                                  _______________________________________________________
+                                /\\                                                      \\ 
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><>)==(O)
+                               \\/''''''''''''''''''''''''''''''''''''''''''''''''''''''/
+                                (                                                      (
+                                 )              -----------------------                 )
+                                (               | Agenda de contactes |                (
+                                 )              -----------------------                 )
+                                (     Vols mostrar un contacte o la llibreta sencera?  (
+                                 )    1 -> Consulta un contacte de l'agenda             )
+                                (     2 -> Mostra la llibreta de contactes             (
+                                 )    0 -> Torna al menú principal.                     )
+                                (                                                      (
+                                 )'''''''''''''''''''''''''''''''''''''''''''''''''''''')    
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)
+                                \\/______________________________________________________/
+                            """);        
         try {
             fSelect = LT.readInt();
             switch(fSelect){
                 case 1 -> Contacte.mostraContacte();
                 case 2 -> Contacte.mostraContactes();
-                case 0 -> enrere();
+                case 0 -> administraAgenda();
             }  
         } catch (NumberFormatException e) {
             System.out.println("Selecció invàlida"); 
@@ -103,39 +140,65 @@ public class FelicitacionsDePadrinaMaker {
         }
     }
     
-    static void administraLlistes(){
+    
+    private static void administraLlistes() throws Exception {
         int fSelect;
-        
-        System.out.println("Vols mostrar una llista o la llibreta sencera?");
+        blanc();
         System.out.println("""
-                           1. Una llista.
-                           2. Tota la llibreta.
-                           0. Tornar enrere.
-                           """);
-        
+                                 _______________________________________________________
+                                /\\                                                      \\
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><>)==(O)
+                               \\/''''''''''''''''''''''''''''''''''''''''''''''''''''''/
+                                (                                                      (
+                                 )              -----------------------                 )
+                                (               | Llistes distribució |                (
+                                 )              -----------------------                 )
+                                (     1 -> Crea una llista nova.                       (
+                                 )    2 -> Consulta les llistes de l'agenda.            )
+                                (     3 -> Consulta els contactes d'una llista         (
+                                 )    4 -> Elimina una llista de distribució            )
+                                (     0 -> Torna al menú principal.                    (
+                                 )'''''''''''''''''''''''''''''''''''''''''''''''''''''')
+                            (O)===)><><><><><><><><><><><><><><><><><><><><><><><><><><><)==(O)
+                                \\/______________________________________________________/
+                            """);
         try{
             fSelect = LT.readInt();
             switch(fSelect){
-                case 1 -> Contacte.mostraLlista();
-                case 2 -> Contacte.mostraLlistes();
-                case 0 -> enrere();
+               case 1 -> Contacte.novaLlista();
+               case 2 -> mostraLlistes();
+               case 3 -> Contacte.consultaLlista();
+               case 4 -> Contacte.eliminaLlista();
+               case 0 -> enrere();
             }
         } catch (NumberFormatException e) {
-            System.out.println("Selecció invàlida"); 
-            administraLlistes();
+            System.out.println("Selecció invàlida");
+            administraAgenda();
         }
     }
+
+    private static void mostraLlistes() throws Exception {
+        mostraDirectoriPerPantalla("fitxers/llistes");
+    }
+    
+    /**
+     * Fa net la pantalla (entre comilles..) . S'empra per a fer guapos els menús.
+     */
+    private static void blanc(){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+    
     
     /**
      * Aquest mètode no fa res. S'empra per a tornar enrere als menús.
      */
-    static void enrere(){
+    private static void enrere(){
     }
     
     /**
      * Marca la variable de final per a acabar l'execució.
      */
-    static void acaba(){
+    private static void acaba(){
         end = true;
     }
     
@@ -152,24 +215,30 @@ public class FelicitacionsDePadrinaMaker {
      * i passa per paràmetre a una funció de sortida de fitxers tota la informació.
      * @throws java.lang.Exception
      */
-    public static void menuCarta() throws Exception {
-        char[] nomCarpeta, destinatarisIn, plantilla;
-        String ruta;
+    private static void menuCarta() throws Exception {
+        blanc();
+        char[] nomCarpeta, destinatarisIn;
+        String ruta, plantilla;
         Directori destinataris;
         System.out.println("""
-                           Escriu el nom de la carta. La carta generada es 
-                           trobarà a una carpeta anomenada igual.
+                           Indica el nom de la carta. 
+                           La carta generada es trobara a una carpeta\s
+                           amb el mateix nom, dins del directori 'generats'.
                             """);
+        System.out.print("Nom de la carta -> ");
         nomCarpeta = LT.readLineChar();
         ruta = creaDirectori(nomCarpeta);
         System.out.println("Ruta dels fitxers generats: " + ruta);
-        System.out.println("Escriu el nom de la plantilla que vols emprar.");
-        plantilla = LT.readLineChar();
+        System.out.println("\nEscriu el numero de la plantilla que vols emprar.");
+        plantilla = seleccionaPlantilla("fitxers/plantilles");
+        System.out.print("Numero de plantilla -> ");
+        System.out.println(plantilla);
         System.out.println("""
                            Escriu els correus dels destinataris de la carta 
-                           separats per espai, o bé deixa-ho en blanc per a 
+                           separats per espai, o be deixa-ho en blanc per a 
                            enviar a tothom.
                            """);
+        System.out.print("Correus dels destinataris -> ");
         destinatarisIn = LT.readLineChar();
         
         if(destinatarisIn.length == 0){
@@ -180,6 +249,10 @@ public class FelicitacionsDePadrinaMaker {
             // Preparem carta
             preparaCartaDirectori(destinataris, plantilla, ruta);
         }
+        
+        System.out.println("Pitja enter per acabar...");
+        char stop = LT.readChar();
+
     }
     
     /**
@@ -190,11 +263,11 @@ public class FelicitacionsDePadrinaMaker {
      * @param ruta
      * @throws Exception 
      */
-    private static void preparaCartaDirectori(Directori directori, char[] plantilla, String ruta) throws Exception {
+    private static void preparaCartaDirectori(Directori directori, String plantilla, String ruta) throws Exception {
         for(int i = 0; i < directori.length() ; i++){
             Contacte contacte;
             contacte = Contacte.cercaContacteCorreu(directori.accedirDirectori()[i].email());
-            if(contacte.email() != null){
+            if(contacte.email().length() != 0){
                 generaCarta(contacte, plantilla, ruta);
             } else {    
                 System.out.println("No s'ha trobat el contacte amb el correu "
@@ -210,7 +283,7 @@ public class FelicitacionsDePadrinaMaker {
      * @param ruta
      * @throws Exception 
      */
-    private static void preparaCartaAgenda(char[] plantilla, String ruta) throws Exception {
+    private static void preparaCartaAgenda(String plantilla, String ruta) throws Exception {
         try{
             FitxerEntrada agenda = new FitxerEntrada("fitxers/agenda.txt");
            
@@ -241,12 +314,8 @@ public class FelicitacionsDePadrinaMaker {
      * @param ruta
      * @throws Exception 
      */
-    private static void generaCarta(Contacte contacte, char[] plantilla, String ruta) throws Exception{
-        System.out.println(contacte.name() + " " + contacte.lastName());
-        System.out.println("Nom de la carta: " + contacte.email());
-        
-        FitxerEntrada fitxerPlantilla = new FitxerEntrada(
-                "fitxers/plantilles/" + String.valueOf(plantilla) + ".html");
+    private static void generaCarta(Contacte contacte, String plantilla, String ruta) throws Exception{        
+        FitxerEntrada fitxerPlantilla = new FitxerEntrada(plantilla);
         fitxerPlantilla.generaDesdePlantilla(contacte, ruta);
         fitxerPlantilla.tanca();
     }
@@ -270,5 +339,39 @@ public class FelicitacionsDePadrinaMaker {
             System.out.println("El directori no s'ha creat correctament.");
         }
         return rutaAbsoluta + "\\";        
-    }    
+    }
+    
+    private static void mostraDirectoriPerPantalla(String path){
+        File dir = new File(path);
+        File[] directori = dir.listFiles();
+        int i = 1;
+        
+        for(File f: directori){
+            System.out.println(i + ". " + f);
+            i++;
+        }
+    }
+    
+    private static File guardaPlantilla(String path, int index){
+        File dir = new File(path);
+        File[] plantilles = dir.listFiles();
+        // Igual és index -1
+        return plantilles[index-1];
+    }
+    
+    private static String seleccionaPlantilla(String path){
+        //Mostram directori primer pic
+        mostraDirectoriPerPantalla(path);
+        //Usuari selecciona número de plantilla
+        try{
+            int seleccio = LT.readInt();
+            //Guardam fitxer plantilla
+            File plantilla = guardaPlantilla(path,seleccio);
+            return plantilla.getAbsolutePath();
+        } catch (Exception e) {
+            System.out.println("Selecció incorrecta.");
+            seleccionaPlantilla(path);
+        }
+        return "Error desconegut sel·leccionant la plantilla. No es generarà cap carta.";
+    }
 }
