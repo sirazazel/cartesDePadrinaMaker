@@ -5,6 +5,7 @@
 package felicitacionsdepadrinamaker;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 
 /**
@@ -67,8 +68,7 @@ public class FitxerSortida {
      * @throws java.lang.Exception
      */
     public void afegeixLiniaNova() throws Exception {
-        buffer.append(CR);
-        buffer.append(LF);
+        buffer.newLine();
     }
     
     /**
@@ -107,11 +107,42 @@ public class FitxerSortida {
     }
     
     /**
+     * Escriu un contacte nou al fitxer.
+     * @param c
+     * @throws Exception
+     */
+    public void escriuContacte(Contacte c) throws Exception {
+        escriuCamp(c.name());
+        afegeixSeparador();
+        escriuCamp(c.lastName());
+        afegeixSeparador();
+        escriuCamp(c.email());
+        afegeixSeparador();
+        escriuCamp(c.phone());
+        afegeixSeparador();
+        afegeixLiniaNova();
+    }
+    
+    /**
      * Afegeix un separador de camp al fitxer.
      * @throws Exception
      */
     public void afegeixSeparador() throws Exception {
         buffer.write(NUM);
+    }
+    
+    public static void eliminaFitxer(String ruta) throws Exception {
+        try {
+            File file = new File(ruta);
+            file.delete();
+        } catch (Exception e) {
+            System.out.println("Error desconegut eliminant el fitxer.");
+        }
+    }
+    
+    public static boolean comprovaFitxer(String ruta) throws Exception {
+        File file = new File(ruta);
+        return file.exists();
     }
     
     /*
@@ -127,6 +158,37 @@ public class FitxerSortida {
             escriuCamp(contacte.phone());
         } else if (camp.compara(EMAILFIELD)) {
             escriuCamp(contacte.email());
+        }
+    }
+    
+    /*
+     * Funcions de generació de llistes de distribució.
+     */
+    
+    public void creaLlista(Directori directori) throws Exception {
+        for(Contacte c: directori.accedirDirectori()){
+            if(c != null){
+                escriuCamp(c.email());
+                afegeixLiniaNova();
+            }
+        }
+    }
+    
+    public static void afegeixContacte(String ruta) throws Exception {
+        boolean afegeix = true;
+        
+        System.out.print("Escriu el correu electrònic del contacte que vols afegir: ");
+        Camp cerca = Camp.nouCampTeclat();
+        Contacte complet = Contacte.cercaPrecisa(cerca);
+        
+        if(complet.existeix()){ 
+            System.out.println("Contacte " + cerca.toString() + " trobat. Afegim...");
+            FitxerSortida llista = new FitxerSortida(ruta, afegeix);
+            llista.escriuCamp(complet.email());
+            llista.afegeixLiniaNova();
+            llista.tanca();            
+        } else {
+            System.out.println("Contacte " + cerca.toString() + " no trobat.");
         }
     }
 }

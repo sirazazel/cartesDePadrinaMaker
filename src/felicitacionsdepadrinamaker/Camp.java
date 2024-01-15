@@ -4,6 +4,8 @@
  */
 package felicitacionsdepadrinamaker;
 
+import java.io.File;
+
 /**
  *
  * @author Francesc Mut Mollà
@@ -35,6 +37,7 @@ public class Camp {
         return longitud;
     }
     
+
     /**
      * Retornam char[] com String legible.
      * @return
@@ -92,14 +95,36 @@ public class Camp {
     }
     
     /**
-     * Comprova si la paraula actual és igual a la cerca.
+     * Comprova si la paraula actual COMENÇA igual a la cerca.
      * L'algorisme recorr cada un dels valors de l'array cercant la primera 
      * diferència.
+     * 
+     * El subprograma comprova si la paraula cercada és menor o igual que el "target",
+     * pot ser una coincidència parcial.
+     * @param b
+     * @return true o false.
+     */
+    public boolean comparaPrecisa(Camp b){
+        boolean sonIguals = (longitud == b.longitud);
+        
+        for(int i = 0; i < longitud && sonIguals; i++){
+            sonIguals = contingut[i] == b.contingut[i];
+        }
+        return sonIguals;
+    }
+    
+    /**
+     * Comprova si la paraula actual és EXACTAMENT igual a la cerca.
+     * L'algorisme recorr cada un dels valors de l'array cercant la primera 
+     * diferència.
+     * 
+     * El subprograma comprova si la paraula cercada és EXACTAMENT igual que el "target",
+     * NO pot ser una coincidència parcial.
      * @param b
      * @return true o false.
      */
     public boolean compara(Camp b){
-        boolean sonIguals = longitud == b.longitud;
+        boolean sonIguals = (longitud == b.longitud) || (longitud < b.longitud);
         
         for(int i = 0; i < longitud && sonIguals; i++){
             sonIguals = contingut[i] == b.contingut[i];
@@ -117,4 +142,27 @@ public class Camp {
         return a.compara(b);
     }
     
+    public boolean esLlista() throws Exception {
+        String ruta = "fitxers/llistes/" + this.retalla() + ".txt";
+        File llista = new File(ruta);
+        
+        return llista.exists();
+    }
+    
+    /**
+     * Elimina un contacte de qualsevol fitxer.
+     * @param ruta
+     * @param contacte
+     * @throws Exception 
+     */
+    public static void eliminaCampDeFitxer(String ruta, Camp camp) throws Exception {
+        FitxerEntrada lectura = new FitxerEntrada(ruta);
+        File fitxerOriginal = new File(ruta);
+        File fitxerTemporal = new File("fitxers/temp.txt");
+        
+        lectura.eliminaCamp(camp, fitxerTemporal.getPath());
+        lectura.tanca();
+        fitxerOriginal.delete();
+        fitxerTemporal.renameTo(fitxerOriginal);
+    }
 }

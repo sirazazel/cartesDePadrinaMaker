@@ -165,10 +165,10 @@ public class FelicitacionsDePadrinaMaker {
         try{
             fSelect = LT.readInt();
             switch(fSelect){
-               case 1 -> Contacte.novaLlista();
+               case 1 -> novaLlista();
                case 2 -> mostraLlistes();
-               case 3 -> Contacte.consultaLlista();
-               case 4 -> Contacte.eliminaLlista();
+               case 3 -> consultaLlista();
+               case 4 -> eliminaLlista();               
                case 0 -> enrere();
             }
         } catch (NumberFormatException e) {
@@ -176,35 +176,10 @@ public class FelicitacionsDePadrinaMaker {
             administraAgenda();
         }
     }
-
-    private static void mostraLlistes() throws Exception {
-        mostraDirectoriPerPantalla("fitxers/llistes");
-    }
-    
-    /**
-     * Fa net la pantalla (entre comilles..) . S'empra per a fer guapos els menús.
-     */
-    private static void blanc(){
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    }
-    
-    
-    /**
-     * Aquest mètode no fa res. S'empra per a tornar enrere als menús.
-     */
-    private static void enrere(){
-    }
-    
-    /**
-     * Marca la variable de final per a acabar l'execució.
-     */
-    private static void acaba(){
-        end = true;
-    }
-    
+        
     /*
      *
-     *  MÈTODES DE CARTA
+     *  Funcions de generació de carta
      *
      */
     
@@ -230,9 +205,7 @@ public class FelicitacionsDePadrinaMaker {
         ruta = creaDirectori(nomCarpeta);
         System.out.println("Ruta dels fitxers generats: " + ruta);
         System.out.println("\nEscriu el numero de la plantilla que vols emprar.");
-        plantilla = seleccionaPlantilla("fitxers/plantilles");
-        System.out.print("Numero de plantilla -> ");
-        System.out.println(plantilla);
+        plantilla = seleccionaFitxer("fitxers/plantilles");
         System.out.println("""
                            Escriu els correus dels destinataris de la carta 
                            separats per espai, o be deixa-ho en blanc per a 
@@ -241,37 +214,46 @@ public class FelicitacionsDePadrinaMaker {
         System.out.print("Correus dels destinataris -> ");
         destinatarisIn = LT.readLineChar();
         
-        if(destinatarisIn.length == 0){
-            preparaCartaAgenda(plantilla, ruta);
-        } else {
-            // Formatejam entrada en un directori de contactes
+        // Si s'entra més d'un caràcter, s'ha de processar què s'ha entrat.
+        if(destinatarisIn.length != 0){
+            // Formatejam entrada en un directori de contactes. Comprovam si
+            // és llista de distribució.
             destinataris = Directori.processaDirectori(destinatarisIn);
             // Preparem carta
             preparaCartaDirectori(destinataris, plantilla, ruta);
+            
+        } else {
+            preparaCartaAgenda(plantilla, ruta);
         }
         
-        System.out.println("Pitja enter per acabar...");
-        char stop = LT.readChar();
-
+        pausa();
     }
     
     /**
      * Prepara l'entorn per a crear una carta per a cada contacte que troba al 
-     * directori donat.
+     * directori donat. Si és una llista, genera una per cada correu.
      * @param d
      * @param plantilla
      * @param ruta
      * @throws Exception 
      */
     private static void preparaCartaDirectori(Directori directori, String plantilla, String ruta) throws Exception {
-        for(int i = 0; i < directori.length() ; i++){
-            Contacte contacte;
-            contacte = Contacte.cercaContacteCorreu(directori.accedirDirectori()[i].email());
-            if(contacte.email().length() != 0){
-                generaCarta(contacte, plantilla, ruta);
-            } else {    
-                System.out.println("No s'ha trobat el contacte amb el correu "
-                                + directori.accedirDirectori()[i].email());
+        for(Contacte cerca: directori.accedirDirectori()){
+            try{
+                Contacte complet = Contacte.cercaPrecisa(cerca.email());
+                // Si el contacte existeix, es marca quan es crea. Si és buid, es marca fals.
+                // Si és llista, s'ha marcat abans quan es processava el directori.
+                if(complet.existeix()){
+                    generaCarta(complet, plantilla, ruta);                
+                } else if (cerca.llista()) {
+                    String correuRetallat = cerca.email().retalla();
+                    String rutaLlista = "fitxers/llistes/" + correuRetallat + ".txt";
+                    System.out.println("S'ha detectat la llista de distribució " + correuRetallat + ".");
+                    preparaCartaLlista(rutaLlista, plantilla, ruta);                
+                } else {
+                    System.out.println("No s'ha trobat el contacte amb el correu donat.");
+                }
+            } catch (Exception e){
             }
         }
     }
@@ -307,6 +289,24 @@ public class FelicitacionsDePadrinaMaker {
     }
     
     /**
+     * Prepara l'entorn per a generar una carta per a cada persona en una llista de distribució.
+     * @param rutaLlista
+     * @param plantilla
+     * @param ruta
+     * @throws Exception 
+     */
+    private static void preparaCartaLlista(String rutaLlista, String plantilla, String ruta) throws Exception {
+        FitxerEntrada llista = new FitxerEntrada(rutaLlista);
+        
+        while(llista.quedenCamps()){
+            Camp cerca = llista.nouCampFitxer();
+            Contacte c = Contacte.cercaPrecisa(cerca);
+            generaCarta(c, plantilla, ruta);
+        }
+        llista.tanca();
+    }
+    
+    /**
      * Genera una carta a partir d'un contacte, una plantilla, i una ruta al 
      * sistema de fitxers.
      * @param contacte Objecte "Contacte"
@@ -319,6 +319,12 @@ public class FelicitacionsDePadrinaMaker {
         fitxerPlantilla.generaDesdePlantilla(contacte, ruta);
         fitxerPlantilla.tanca();
     }
+    
+    /* 
+     *
+     * Funcions de selecció de plantilles
+     *
+     */
     
     /**
      * Crea un nou directori a la ruta donada. Si ja està creada, posiciona.
@@ -341,6 +347,33 @@ public class FelicitacionsDePadrinaMaker {
         return rutaAbsoluta + "\\";        
     }
     
+    /**
+     * Menú de selecció de plantilla.
+     * @param path
+     * @return 
+     */
+    private static String seleccionaFitxer(String path){
+        //Mostram directori primer pic
+        mostraDirectoriPerPantalla(path);
+        //Usuari selecciona número de fitxer
+        try{
+            System.out.print("Seleccio -> ");
+            int seleccio = LT.readInt();
+            System.out.println();
+            //Guardam fitxer plantilla
+            File plantilla = guardaPlantilla(path,seleccio);
+            return plantilla.getAbsolutePath();
+        } catch (Exception e) {
+            System.out.println("Selecció incorrecta.");
+            seleccionaFitxer(path);
+        }
+        return "Error desconegut sel·leccionant el fitxer.";
+    }
+
+    /**
+     * Mostra el directori passat per paràmetre, i hi afegeix un índex.
+     * @param path 
+     */
     private static void mostraDirectoriPerPantalla(String path){
         File dir = new File(path);
         File[] directori = dir.listFiles();
@@ -351,7 +384,13 @@ public class FelicitacionsDePadrinaMaker {
             i++;
         }
     }
-    
+        
+    /**
+     * Retorna el fitxer de la plantilla seleccionada.
+     * @param path
+     * @param index
+     * @return 
+     */
     private static File guardaPlantilla(String path, int index){
         File dir = new File(path);
         File[] plantilles = dir.listFiles();
@@ -359,19 +398,167 @@ public class FelicitacionsDePadrinaMaker {
         return plantilles[index-1];
     }
     
-    private static String seleccionaPlantilla(String path){
-        //Mostram directori primer pic
-        mostraDirectoriPerPantalla(path);
-        //Usuari selecciona número de plantilla
-        try{
-            int seleccio = LT.readInt();
-            //Guardam fitxer plantilla
-            File plantilla = guardaPlantilla(path,seleccio);
-            return plantilla.getAbsolutePath();
-        } catch (Exception e) {
-            System.out.println("Selecció incorrecta.");
-            seleccionaPlantilla(path);
-        }
-        return "Error desconegut sel·leccionant la plantilla. No es generarà cap carta.";
+    /*
+     *
+     *  Funcions llistes de distribució
+     *
+     */
+    
+    private static void novaLlista() throws Exception {
+        char[] nomLlista, destinatarisIn;
+        Directori destinataris;
+        String ruta = "fitxers/llistes";
+        
+        blanc();
+        System.out.println("Escriu el nom de la nova llista de distribució.");
+        System.out.print("Nom -> ");
+        nomLlista = LT.readLineChar();
+        ruta = ruta + "/" + String.valueOf(nomLlista) + ".txt";
+        System.out.println("Escriu, separat per espais, cada correu electrònic"
+                + "que ha d'estar subscrit a aquesta llista de distribució.");
+        System.out.print("Destinataris -> ");
+        destinatarisIn = LT.readLineChar();
+        
+        destinataris = Directori.processaDirectori(destinatarisIn);
+        
+        // Cream la llista amb el directori de contactes vàlids.
+        FitxerSortida novaLlista = new FitxerSortida(ruta);
+        novaLlista.creaLlista(destinataris);
+        novaLlista.tanca();
+        
+        System.out.println("S'ha creat la nova llista de distribució " + 
+                String.valueOf(nomLlista) + " amb els contactes següents: ");
+        Contacte.mostraContactesDirectori(destinataris);
+        pausa();
     }
+    
+    /**
+     * Mostra la llista de distribució triada per pantalla.
+     * @throws java.lang.Exception
+     */
+    public static void consultaLlista() throws Exception {
+        blanc();
+        System.out.println("Selecciona la llista de distribució que vols "
+                + "consultar");
+        System.out.println("Per seleccionar, escriu el número de la llista.");
+        String rutaLlista = seleccionaFitxer("fitxers/llistes");
+        System.out.println("Llista seleccionada ->" + rutaLlista);
+             
+        FitxerEntrada llista = new FitxerEntrada(rutaLlista);
+        while(llista.quedenCamps()){
+            Camp c = llista.nouCampFitxer();
+            System.out.println(c);
+        }
+        
+        llista.tanca();
+        
+        modificaLlista(rutaLlista);
+        
+        pausa();
+    }
+    
+    private static void mostraLlistes() throws Exception {
+        blanc();
+        System.out.println("Llistes disponibles: ");
+        mostraDirectoriPerPantalla("fitxers/llistes");
+        pausa();
+    }
+    
+    private static void eliminaLlista() throws Exception {
+        blanc();
+        System.out.println("Quina llista vols eliminar? \n Llistes disponibles: ");
+        String rutaLlista = seleccionaFitxer("fitxers/llistes");
+        System.out.println(rutaLlista);
+        FitxerSortida.eliminaFitxer(rutaLlista);
+        if(FitxerSortida.comprovaFitxer(rutaLlista)) {
+            System.out.println("Error eliminant la llista. Torna a provar.");
+        } else {
+            System.out.println("Llista eliminada correctament.");
+        }
+        pausa();
+    }
+    
+    private static void modificaLlista(String rutaLlista) throws Exception {
+        boolean continua = false;
+        System.out.println("Vols modificar la llista de distribució seleccionada? (S)i / (N)o");
+        try {
+            char selector = LT.readChar();
+                switch(selector){
+                    case 's' -> continua = true;
+                    case 'S' -> continua = true;
+                    case 'n' -> continua = false;
+                    case 'N' -> continua = false;
+                }
+        } catch (Exception e)  {
+            System.out.println("Selecció invàlida.");
+        }
+
+        if(continua){
+            System.out.println("""
+                               1. Afegir un contacte a la llista.
+                               2. Eliminar un contacte.
+                               0. He canviat d'idea.
+                               """);
+            try{
+                int selectorII = LT.readInt();
+                switch (selectorII){
+                    case 1 -> FitxerSortida.afegeixContacte(rutaLlista);
+                    case 2 -> eliminaDeLlista(rutaLlista);
+                    default -> enrere();
+                }
+            } catch (Exception e) {
+                System.out.println("Selecció invàlida.");
+            }
+        }
+    }
+    
+    /**
+     * Demana quin usuari s'ha d'eliminar.. No me mola.
+     * @param rutaLlista
+     * @throws Exception 
+     */
+    private static void eliminaDeLlista(String rutaLlista) throws Exception {
+        System.out.println("Quin contacte vols eliminar?");
+        
+        Camp cerca = Camp.nouCampTeclat();
+        Contacte complet = Contacte.cercaPrecisa(cerca);
+        
+        Camp.eliminaCampDeFitxer(rutaLlista, complet.email());
+    }
+    
+    /*
+     *
+     *  Funcions del menú
+     *
+     */
+    
+    /**
+     * 
+     * Fa net la pantalla (entre comilles..) . S'empra per a fer guapos els menús.
+     */
+    private static void blanc(){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+    
+    /**
+     * Aquest mètode no fa res. S'empra per a tornar enrere als menús.
+     */
+    private static void enrere(){
+    }
+    
+    /**
+     * Marca la variable de final per a acabar l'execució.
+     */
+    private static void acaba(){
+        end = true;
+    }
+
+    /**
+     * Pausa el programa fins que l'usuari introdueix un enter.
+     * Si empleam var, no hauria de tenir cap Exception per tipus explícit de variable?
+     */
+    private static void pausa(){
+        System.out.println("Pitja enter per acabar...");
+        var pausa = LT.readChar();
+    }    
 }

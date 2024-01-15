@@ -4,6 +4,7 @@
  */
 package felicitacionsdepadrinamaker;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Contacte {
@@ -12,6 +13,7 @@ public class Contacte {
     private Camp lastName;
     private Camp email;
     private Camp phone;
+    private boolean existeix, llista;
     
     /**
      * Constructor objecte Contacte.
@@ -25,6 +27,8 @@ public class Contacte {
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.existeix = true;
+        this.llista = false;
     }
     
     /**
@@ -41,7 +45,7 @@ public class Contacte {
      * 
      */
     public Contacte(){
-       email = new Camp(); 
+       this.existeix = false;
     }
     
     /**
@@ -50,10 +54,6 @@ public class Contacte {
      */
     @Override
     public String toString(){
-
-        
-        
-        
         return "------CONTACTE ------\n" +   
               name + " " + lastName + "\n" + 
               "Tel: " + phone + "\n" + 
@@ -77,6 +77,19 @@ public class Contacte {
     }
     public Camp phone(){
         return phone;
+    }
+    public boolean existeix(){
+        return existeix;
+    }
+    public boolean llista(){
+        return llista;
+    }
+    
+    /**
+     * Marcam aquest contacte com a llista de distribució.
+     */
+    public void marcaLlista(){
+        this.llista = true;
     }
     
     /**
@@ -108,9 +121,7 @@ public class Contacte {
         
         guardaAlFitxer(c);
         
-        System.out.println("Pitja enter per acabar...");
-        char stop = LT.readChar();
-
+        pausa();
     }    
 
 
@@ -148,12 +159,12 @@ public class Contacte {
      * @return Contacte trobat (o buid)
      * @throws java.lang.Exception
      */
-    public static Contacte cercaContacteCorreu(Camp cerca) throws Exception{  
+    public static Contacte cercaContacte(Camp cerca) throws Exception{  
         Contacte c = new Contacte();
         Boolean trobat = false;
         try{
             FitxerEntrada agenda = new FitxerEntrada("fitxers/agenda.txt");
-            System.out.println("Cercant al directori..");
+            // System.out.println("Cercant al directori..");
             
             Camp name, lastName, email, phone;
             
@@ -164,7 +175,43 @@ public class Contacte {
                 email = agenda.nouCampFitxer();
                 phone = agenda.nouCampFitxer();
                 // Verificam correu
-                if(cerca.compara(email)){
+                if(cerca.compara(name) || cerca.compara(lastName) || cerca.compara(email) || cerca.compara(phone)){
+                    trobat = true;
+                    c = new Contacte(name, lastName, email, phone);
+                }
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("El fitxer directori no està disponible.");
+        }
+        return c;
+    }   
+    
+    /**
+     * Cerca un contacte amb el correu electrònic exactament igual. El primer contacte que 
+     * coincideixi es mostra. (Ignora si hi ha més d'un contacte amb el mateix
+     * correu)
+     * Si no en troba cap, retorna un contacte buid.
+     * @param cerca
+     * @return Contacte trobat (o buid)
+     * @throws java.lang.Exception
+     */
+    public static Contacte cercaPrecisa(Camp cerca) throws Exception{  
+        Contacte c = new Contacte();
+        Boolean trobat = false;
+        try{
+            FitxerEntrada agenda = new FitxerEntrada("fitxers/agenda.txt");
+            
+            Camp name, lastName, email, phone;
+            
+            while(agenda.quedenCamps() && !trobat){
+                // Llegim una línia
+                name = agenda.nouCampFitxer();
+                lastName = agenda.nouCampFitxer();
+                email = agenda.nouCampFitxer();
+                phone = agenda.nouCampFitxer();
+                // Verificam correu
+                if(cerca.comparaPrecisa(email)){
                     trobat = true;
                     c = new Contacte(name, lastName, email, phone);
                 }
@@ -185,13 +232,13 @@ public class Contacte {
         Camp cerca;
         Contacte resultat;
         char selector;
-        System.out.println("Escriu el correu electrònic del contacte que"
+        System.out.println("Escriu el nom, llinatges o correu electrònic del contacte que"
                             + " vols mostrar.");
+        System.out.print("Nom, llinatges o correu: ");
         cerca = Camp.nouCampTeclat();
-        System.out.println("CERCA: " + cerca);
-        resultat = cercaContacteCorreu(cerca);
+        resultat = cercaContacte(cerca);
         
-        if(resultat.email().length() != 0){
+        if(resultat.existeix()){
             System.out.println("S'ha trobat un contacte coincident amb la cerca.");
             System.out.println(resultat);    
         } else {
@@ -211,9 +258,8 @@ public class Contacte {
                 }
             }
         }
-        System.out.println("Pitja enter per acabar...");
-        char stop = LT.readChar();
 
+        pausa();
     }
     
     /**
@@ -241,53 +287,103 @@ public class Contacte {
         } catch (Exception e){
             System.out.println("Fitxer no trobat.");
         }
-        System.out.println("Pitja enter per acabar...");
-        char stop = LT.readChar();
+
+        pausa();
+    }
+ 
+    /**
+     * Donat un directori passat per paràmetre, mostra el nom dels contactes 
+     * guardats.
+     * @throws java.lang.Exception
+     * @param 
+     */
+    public static void mostraContactesDirectori(Directori directori) throws Exception {      
+        for(Contacte c: directori.accedirDirectori()){
+            if(c != null){
+                System.out.println("Contacte -> " + c.name + " " + c.lastName);
+            }
+        }
+
     }
     
     /**
-     * Elimina tots els contactes del directori.
+     * Compara tots els camps d'aquest contacte amb el contacte passat per parametre.
+     * @param b
+     * @return
+     */
+    public boolean compara(Contacte b){
+        return (name.compara(b.name) && lastName.compara(lastName) && email.compara(b.email) && phone.compara(b.phone));
+    }
+    
+    /**
+     * Elimina un contacte del directori.
      *
      * @throws java.lang.Exception
      */
     public static void eliminaContacte() throws Exception {
-        Contacte resultat;
+        Contacte complet;
         Camp cerca;
-        
+        String agenda = "fitxers/agenda.txt";
+        String llistes = "fitxers/llistes/";
         System.out.println("Escriu el correu electrònic del contacte que"
                             + " vols eliminar.");
         cerca = Camp.nouCampTeclat();
-        resultat = cercaContacteCorreu(cerca);
-
-        System.out.println(resultat);        
+        //Validam que el contacte existeix.
+        complet = cercaPrecisa(cerca);
+        
+        if(!complet.existeix()){
+            System.out.println("El contacte " + cerca + "no és a l'agenda.");
+            return;
+        } else {
+            System.out.println("El contacte " + complet.name + " " + complet.lastName 
+                                + "s'eliminarà de la llista. (S)i / (N)o");
+            try{
+                char selector = LT.readChar();
+                switch(selector){
+                    case 's': 
+                    case 'S': break;
+                    case 'n': 
+                    case 'N': return;
+                    default: {
+                        System.out.println("Selecció invàlida."); 
+                        eliminaContacte();
+                    }                
+                }
+            } catch (Exception e) {
+            }    
+        }
+        
+        eliminaContacteDeFitxer(agenda, complet);
+        
+        //Ara busquem si el contacte estava a alguna llista de distribució
+        File dir = new File("fitxers/llistes");
+        for(File f: dir.listFiles()){
+            String ruta = llistes + f.getName();
+            Camp.eliminaCampDeFitxer(ruta, complet.email());
+        }
+        
+        pausa();
+    }
+          
+    /**
+     * Elimina un contacte de qualsevol fitxer.
+     * @param ruta
+     * @param contacte
+     * @throws Exception 
+     */
+    public static void eliminaContacteDeFitxer(String ruta, Contacte contacte) throws Exception {
+        FitxerEntrada lectura = new FitxerEntrada(ruta);
+        File fitxerOriginal = new File(ruta);
+        File fitxerTemporal = new File("fitxers/temp.txt");
+        
+        lectura.elimina(contacte, fitxerTemporal.getPath());
+        lectura.tanca();
+        fitxerOriginal.delete();
+        fitxerTemporal.renameTo(fitxerOriginal);
     }
     
-    /**
-     * Mostra el contacte triat per pantalla.
-     */
-    public static void novaLlista(){
-        
-    }
     
-    /**
-     * Mostra el contacte triat per pantalla.
-     */
-    public static void eliminaLlista(){
-        
-    }
-    /**
-     * Mostra tots els contactes del directori.
-     */
-    public static void mostraLlistes(){
-        
-    }
     
-    /**
-     * Mostra el contacte triat per pantalla.
-     */
-    public static void consultaLlista(){
-        
-    }
     
     /**
      * Aquest mètode no fa res. S'empra per a tornar enrere als menús.
@@ -295,11 +391,20 @@ public class Contacte {
     private static void enrere(){
         
     }
+    
     /**
      * Fa net la pantalla (entre comilles..) . S'empra per a fer guapos els menús.
      */
     private static void blanc(){
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
-
+    
+    /**
+     * Pausa el programa fins que l'usuari introdueix un enter.
+     * Si empleam var, no hauria de tenir cap Exception per tipus explícit de variable
+     */
+    private static void pausa(){
+        System.out.println("Pitja enter per acabar...");
+        var pausa = LT.readChar();
+    }
 }

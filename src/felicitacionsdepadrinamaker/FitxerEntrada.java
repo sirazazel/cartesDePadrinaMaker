@@ -5,7 +5,6 @@
 package felicitacionsdepadrinamaker;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 
 /**
@@ -35,6 +34,26 @@ public class FitxerEntrada {
         buffer = new BufferedReader(file);
     }
     
+    /*
+     * Mètodes útils
+     */
+    
+    /**
+     * Detecta si és el final del fitxer
+     * @return True o false si no queden caràcters al fitxer.
+     */
+    public boolean quedenLletres(){
+        return(caracter != EOF);
+    }
+    
+    /**
+     * Tanca el fitxer.
+     * @throws Exception 
+     */
+    public void tanca() throws Exception {
+        buffer.close();
+        file.close();
+    }    
     
     /*
      * MÈTODES DE GENERACIÓ DE CAMP
@@ -63,7 +82,7 @@ public class FitxerEntrada {
      * @throws Exception 
      */
     private void posicionaSeguentCamp() throws Exception {
-        while(caracter == NUM || caracter == LF || caracter == CR){
+        while(caracter == NUM || caracter == LF || caracter == CR || caracter == SPA){
             caracter = buffer.read();
         }
     }
@@ -77,7 +96,6 @@ public class FitxerEntrada {
         posicionaSeguentCamp();
         return (caracter != EOF);
     }
-    
     
     /*
      * MÈTODES DE GENERACIÓ DE CARTA  
@@ -137,21 +155,53 @@ public class FitxerEntrada {
             System.out.println("Error");
         }
     }
+    
+    /*
+     * Mètodes per a eliminar contactes.
+     */
 
     /**
-     * Detecta si és el final del fitxer
-     * @return True o false si no queden caràcters al fitxer.
+     *
+     * @param complet
+     * @throws Exception
      */
-    public boolean quedenLletres(){
-        return(caracter != EOF);
+    public void elimina(Contacte complet, String sortida) throws Exception{
+        Camp name, lastName, email, phone;
+        FitxerSortida agendaTemporal = new FitxerSortida(sortida);
+        
+        //Llegim línia fitxer i generam contacte.
+        while(quedenLletres()){
+            name = nouCampFitxer();
+            lastName = nouCampFitxer();
+            email = nouCampFitxer();
+            phone = nouCampFitxer();
+            Contacte temporal = new Contacte(name, lastName, email, phone);
+            
+            if(!temporal.compara(complet)){
+                agendaTemporal.escriuContacte(temporal);
+            }
+        }
+        agendaTemporal.tanca();
     }
     
     /**
-     * Tanca el fitxer.
-     * @throws Exception 
+     *
+     * @param complet
+     * @throws Exception
      */
-    public void tanca() throws Exception {
-        buffer.close();
-        file.close();
+    public void eliminaCamp(Camp correu, String sortida) throws Exception{
+        Camp campLlegit;
+        FitxerSortida agendaTemporal = new FitxerSortida(sortida);
+        
+        //Llegim línia fitxer i generam contacte.
+        while(quedenLletres()){
+            campLlegit = nouCampFitxer();
+            
+            if(!campLlegit.compara(correu)){
+                agendaTemporal.escriuCamp(campLlegit);
+                agendaTemporal.afegeixLiniaNova();
+            }
+        }
+        agendaTemporal.tanca();
     }
 }
