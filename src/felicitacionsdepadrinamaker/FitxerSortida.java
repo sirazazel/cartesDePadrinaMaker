@@ -25,15 +25,15 @@ public class FitxerSortida {
     private static final char NUL = '\0';
     
     //Variables de plantilla
-    private static final String NAME = "NAME";
-    private static final String LASTNAME = "LASTNAME";
-    private static final String PHONE = "PHONE";
-    private static final String EMAIL = "EMAIL";
+    private static final String NAME = "NOMBRE";
+    private static final String LASTNAME = "APELLIDO";
+    private static final String PHONE = "NUM-TEL";
+    private static final String EMAIL = "E-MAIL";
     
-    private static final Camp NAMEFIELD = new Camp(NAME.toCharArray(), 4);
+    private static final Camp NAMEFIELD = new Camp(NAME.toCharArray(), 6);
     private static final Camp LASTNAMEFIELD = new Camp(LASTNAME.toCharArray(), 8);
-    private static final Camp PHONEFIELD = new Camp(PHONE.toCharArray(), 5);
-    private static final Camp EMAILFIELD = new Camp(EMAIL.toCharArray(), 5);
+    private static final Camp PHONEFIELD = new Camp(PHONE.toCharArray(), 7);
+    private static final Camp EMAILFIELD = new Camp(EMAIL.toCharArray(), 6);
 
     /**
      * Constructor

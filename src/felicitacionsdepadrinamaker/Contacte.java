@@ -341,15 +341,17 @@ public class Contacte {
                 char selector = LT.readChar();
                 switch(selector){
                     case 's': 
-                    case 'S': break;
+                    case 'S': selector = LT.readChar(); break;
                     case 'n': 
-                    case 'N': return;
+                    case 'N': selector = LT.readChar(); return;
                     default: {
+                        selector = LT.readChar(); 
                         System.out.println("Selecció invàlida."); 
                         eliminaContacte();
                     }                
                 }
             } catch (Exception e) {
+                char avanca = LT.readChar();
             }    
         }
         
@@ -361,7 +363,9 @@ public class Contacte {
             String ruta = llistes + f.getName();
             Camp.eliminaCampDeFitxer(ruta, complet.email());
         }
-        
+                
+        System.out.println("Nota: Tot i que el contacte sí s'ha eliminat de la llista de distribució,"
+                + " no s'elimina de l'agenda. No sé per què passa això! ");
         pausa();
     }
           

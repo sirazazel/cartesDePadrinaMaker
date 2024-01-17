@@ -1,9 +1,5 @@
-Prova#Llinatge#Correu#Telefon
 Aina Maria#Fernandez Tomas#amft@estudiant.uib.cat#555555555
 Biel#Ortiz#b.ortiz@uib.es#+34 123 456 789
 Carme#Garcia Alomar#c.garcia@uib.cat#666 12 34 56
-Sandra#Cabrera García#scabrera@estudiant.uib.cat#123456789
-Francesc#Mut Molla#xesc@estudiant.uib.es#6544
-Pau#Llinas Llabres#pau@estudiant.uib.cat#a1293
-Pere#Ruiz Marin#pere@estudiant.udg.cat#856465
-Marc#Fiol Mayrata#marc@estudiant.uib.cat#1234
+
+ababa#xcc#a@a.com#666666666
